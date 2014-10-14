@@ -1,5 +1,6 @@
 $(function() {
     $('.sticky-header-wrap').stickyHeaders({
-        endOfScrollPos: $('.footer').offset().top
+		endOfScrollPos: $('.footer').offset().top
+		,startOfScrollElement: '#header'
     });
 });

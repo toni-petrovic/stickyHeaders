@@ -1,7 +1,7 @@
 body {margin:0; padding:0; font-family:Arial,sans-serif; font-size:14px;}
 p {font-size:16px; line-height:140%;}
-.header {text-align:center;}
-.sticky-header-wrap {position:relative; width:100%; max-width:500px; margin:40px auto 0; overflow:hidden;}
+.header {text-align:center; position: fixed; width: 100%; top: 50px; }
+.sticky-header-wrap {position:relative; width:100%; max-width:500px; margin:50px auto 0; overflow:hidden;}
 .sticky-header-wrap h2, .sticky-header-wrap p {width:100%;}
 .sticky-header-wrap h2 {max-width:500px; margin:40px 0 0; padding:10px 0; background:rgba(255, 255, 255, 0.9); line-height:120%;}
 .footer {width:100%; background-color:#333; text-align:center;}

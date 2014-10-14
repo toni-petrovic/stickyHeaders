@@ -11,7 +11,8 @@
             stickyClass:           'sticky-helper',
             stickyChildren:        '<span></span>',
             textContainerSelector: 'span',
-            endOfScrollPos:        null
+            startOfScrollElement:  null,
+            endOfScrollPos:        null,
         };
 
 
@@ -80,8 +81,9 @@
 
         // update sticky on scoll
         updateSticky: function() {
-            var scrollPos = window.scrollY,
-                i         = 0;
+			var topPos = window.scrollY;
+            var scrollPos = this.getPosition(window.scrollY);
+            var i = 0;
 
             // are we above first header?
             if (scrollPos < this.headers[i].pos) {
@@ -92,12 +94,12 @@
 
 
             // are we below last header?
-            } else if (!!this.endOfScrollPos && scrollPos > this.endOfScrollPos - this.headers[this.headerLength - 1].height) {
+		} else if (!!this.endOfScrollPos && scrollPos > this.endOfScrollPos - this.getPosition(this.headers[this.headerLength - 1].height) ) {
                 if (this.lastStatus.index == this.headerLength - 1 && !this.lastStatus.isFixed)
                     return;
 
                 this.disableSticky(
-                    this.endOfScrollPos - this.headers[this.headerLength - 1].height,
+                    this.endOfScrollPos - this.getPosition(this.headers[this.headerLength - 1].height),
                     this.headerLength - 1
                 );
 
@@ -109,15 +111,15 @@
                 for (i = this.headerLength - 1; !updateComplete; i--) {
 
                     // are we in transition between 2 headers?
-                    if (i + 1 < this.headerLength && scrollPos + this.headers[i].height >= this.headers[i+1].pos) {
+                    if (i + 1 < this.headerLength && topPos + this.getPosition(this.headers[i] ? this.headers[i].height : 0) >= this.headers[i+1].pos) {
                         if (this.lastStatus.index == i && !this.lastStatus.isFixed)
                             return;
 
-                        this.disableSticky(this.headers[i+1].pos - this.headers[i].height, i);
+							this.disableSticky(this.headers[i+1].pos - this.getPosition(this.headers[i] ? this.headers[i].height : 0), i);
                         updateComplete = true;
 
                     // are we below current header?
-                    } else if (scrollPos >= this.headers[i].pos) {
+				} else if (scrollPos >= this.headers[i].pos) {
                         if (this.lastStatus.index == i && this.lastStatus.isFixed)
                             return;
 
@@ -131,12 +133,13 @@
 
         // make sticky container fixed and position it at top
         enableSticky: function(currentIndex) {
+			
             this.$sticky
                 .removeClass(this.options.hiddenClass)
                 .addClass('is-sticky')
                 .css({
-                    position: 'fixed',
-                    top:      0
+                    position: 	'fixed',
+                    top:		this.getPosition(0)
             });
 
             this.updateTextAndClassesAndStatus(currentIndex, true);
@@ -200,6 +203,21 @@
                     ? this.options.endOfScrollPos()
                     : this.options.endOfScrollPos;
         }
+		
+		,getPosition: function(height) {
+			var position = 0;
+			if(this.options.startOfScrollElement){
+				var tmp = $(this.options.startOfScrollElement);				
+				// var top = $(tmp).offset().top; // position from $(document).offset().top
+			    // position = $(tmp).height(); // position from $(document).offset().top	
+				position = $(tmp).position().top + $(tmp).outerHeight(true);
+				console.log('position: ' + (tmp).position().top + "|" + $(tmp).outerHeight(true));
+				console.log('position: ' + position);
+				console.log('height: ' + height);
+			}	
+			return height + position;
+		}
+		
     };
 
 
